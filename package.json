@@ -7,6 +7,9 @@
     "start": "functions-framework --target=obtainToken"
   },
   "author": "Brendan Lestander <blestander@gmail.com>",
+  "dependencies": {
+    "superagent": "^5.2.2"
+  },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.5.1"
   }
