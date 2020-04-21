@@ -3,7 +3,7 @@ exports.helloHTTP = (request, response) => {
     response.send("Hello, world!")
 };
 
-exports.token = (request, response) => {
+exports.obtainToken = (request, response) => {
     if (handleCORS(request, response, ["POST"]))
         response.status(200).send(request.body)
 }
