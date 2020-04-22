@@ -1,4 +1,5 @@
 const superagent = require("superagent");
+const moment = require("moment")
 
 const DISCORD_OBTAIN_TOKEN_URL = "https://discordapp.com/api/oauth2/token"
 const DISCORD_SCOPE = encodeURI("identify guild")
@@ -18,7 +19,12 @@ exports.obtainToken = (request, response) => {
             .send("grant_type=authorization_code")
             .send(`code=${request.body.code}`)
             .then((dis_response) => {
-                response.status(200).send(dis_response.body)
+                response.status(200).send({
+                    access_token: dis_response.body.access_token,
+                    refresh_token: dis_response.body.refresh_token,
+                    expires_on: moment().add(dis_response.body.expires_in, 'seconds').format(),
+                    scope: dis_response.body.scope
+                })
             });
     }
 }
