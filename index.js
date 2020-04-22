@@ -25,6 +25,11 @@ exports.obtainToken = (request, response) => {
                     expires_on: moment().add(dis_response.body.expires_in, 'seconds').format(),
                     scope: dis_response.body.scope
                 })
+            }).catch(error => {
+                if (error.response.body.error == "invalid_request")
+                    response.status(400).send({error: "invalid_code"})
+                else
+                    response.status(error.status).send(error.response.body)
             });
     }
 }
