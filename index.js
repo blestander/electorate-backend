@@ -11,6 +11,10 @@ exports.helloHTTP = (request, response) => {
 
 exports.obtainToken = (request, response) => {
     if (handleCORS(request, response, ["POST"])) {
+        if (!("code" in request.body)) {
+            response.status(400).send({error: "no_code"})
+            return;
+        }
         superagent.post(DISCORD_OBTAIN_TOKEN_URL)
             .send(`client_id=${process.env.CLIENT_ID}`)
             .send(`client_secret=${process.env.CLIENT_SECRET}`)
