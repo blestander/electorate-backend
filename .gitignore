@@ -120,3 +120,6 @@ dist
 
 # Environment variable batch file
 env.bat
+
+# Deployment environment files
+deploy_env/
