@@ -1,5 +1,6 @@
 const superagent = require("superagent");
 const moment = require("moment")
+const { JWT, JWK } = require("jose");
 
 const DISCORD_OBTAIN_TOKEN_URL = "https://discordapp.com/api/oauth2/token"
 const DISCORD_SCOPE = encodeURI("identify guild")
@@ -23,10 +24,12 @@ exports.obtainToken = handleCORS((request, response) => {
         .send(`code=${request.body.code}`)
         .then((dis_response) => {
             response.status(200).send({
-                access_token: dis_response.body.access_token,
-                refresh_token: dis_response.body.refresh_token,
-                expires_on: moment().add(dis_response.body.expires_in, 'seconds').format(),
-                scope: dis_response.body.scope
+                token: JWT.sign({
+                    access: dis_response.body.access_token,
+                    refresh: dis_response.body.refresh_token,
+                    expires_on: moment().add(dis_response.body.expires_in, 'seconds').format(),
+                    scope: dis_response.body.scope.split(" ")
+                    }, JWK.asKey(process.env.TOKEN_KEY))
             })
         }).catch(error => {
             if (error.response.body.error == "invalid_request")

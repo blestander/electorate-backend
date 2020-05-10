@@ -8,6 +8,7 @@
   },
   "author": "Brendan Lestander <blestander@gmail.com>",
   "dependencies": {
+    "jose": "^1.27.0",
     "moment": "^2.24.0",
     "superagent": "^5.2.2"
   },
