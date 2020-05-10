@@ -24,12 +24,12 @@ exports.obtainToken = handleCORS((request, response) => {
         .send(`code=${request.body.code}`)
         .then((dis_response) => {
             response.status(200).send({
-                token: JWT.sign({
-                    access: dis_response.body.access_token,
-                    refresh: dis_response.body.refresh_token,
-                    expires_on: moment().add(dis_response.body.expires_in, 'seconds').format(),
-                    scope: dis_response.body.scope.split(" ")
-                    }, JWK.asKey(process.env.TOKEN_KEY))
+                token: buildJWT(
+                    dis_response.body.access_token,
+                    dis_response.body.refresh_token,
+                    moment().add(dis_response.body.expires_in, 'seconds').format(),
+                    dis_response.body.scope.split(" ")
+                )
             })
         }).catch(error => {
             if (error.response.body.error == "invalid_request")
@@ -53,4 +53,13 @@ function handleCORS(func, methods) {
         } else
             func(request, response);
     }
+}
+
+function buildJWT(access_token, refresh_token, expires_on, scope) {
+    return JWT.sign({
+        access: access_token,
+        refresh: refresh_token,
+        expires_on: expires_on,
+        scope, scope
+    }, JWK.asKey(process.env.TOKEN_KEY))
 }
