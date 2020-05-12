@@ -57,6 +57,10 @@ function checkBallotAndCreateBallot(response, user_id, choice, ballotsRef) {
 
 function concludeCastVote(response, choice) {
     return snapshot => {
-        response.status(200).send({choice: choice});
+        response.status(200).send({
+            choice: choice,
+            can_vote: false,
+            has_voted: true,
+        });
     };
 }
