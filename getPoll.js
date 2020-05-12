@@ -34,7 +34,7 @@ function processPollAndRequestBallot(response, docRef, poll_id, user_id) {
             docRef.collection("ballots").where("voter", "==", user_id).get()
                 .then(processBallotAndRespond(response, poll))
                 .catch(err => {
-                    response.status(500).send("Server error");
+                    response.status(500).send('Server error');
                 })
         }
         else
@@ -43,12 +43,12 @@ function processPollAndRequestBallot(response, docRef, poll_id, user_id) {
 }
 
 function processBallotAndRespond(response, poll) {
-    return doc => {
-        poll.has_voted = doc.exists;
+    return docs => {
+        poll.has_voted = (docs.size != 0);
         poll.can_vote = !poll.has_voted;
 
         if (poll.has_voted)
-            poll.choice = doc.data().choice;
+            docs.forEach(doc => poll.choice = doc.data().choice);
 
         response.status(200).send(poll);
     }
