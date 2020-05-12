@@ -33,7 +33,7 @@ function checkPollAndRequestBallot(response, user_id, choice, docRef) {
             else {
                 let ballotsRef = docRef.collection('ballots');
                 ballotsRef.where('voter', '==', user_id)
-                    .get().then(checkBallotAndCreateBallot(response, user_id, choice, docRef))
+                    .get().then(checkBallotAndCreateBallot(response, user_id, choice, ballotsRef))
                     .catch(err => response.status(500).send('Server error'));
             }
         } else // Poll does not exist
@@ -41,13 +41,22 @@ function checkPollAndRequestBallot(response, user_id, choice, docRef) {
     };
 }
 
-function checkBallotAndCreateBallot(response, user_id, choice, ballotRef) {
+function checkBallotAndCreateBallot(response, user_id, choice, ballotsRef) {
     return ballot => {
         if (ballot.size) // Vote already cast
             response.status(409).send({
                 error: "already voted"
             });
         else
-            response.status(200).send({choice: choice});
+            ballotsRef.add({
+                voter: user_id,
+                choice: choice
+            }).then(concludeCastVote(response, choice));
     }
+}
+
+function concludeCastVote(response, choice) {
+    return snapshot => {
+        response.status(200).send({choice: choice});
+    };
 }
