@@ -19,9 +19,22 @@ exports.castVote = handleCORS((request, response) => {
 
 function checkPollAndRequestBallot(response, user_id, choice, docRef) {
     return doc => {
-        response.status(200).send({
-            id: user_id,
-            choice: choice
-        });
+        if (doc.exists) { // Poll exists
+            let docdata = doc.data();
+            if (docdata.finished) // Poll is concluded
+                response.status(409).send({
+                    error: "finished"
+                })
+            else if (!docdata.options.includes(choice))
+                response.status(409).send({
+                    error: "invalid choice"
+                })
+            else
+                response.status(200).send({
+                    id: user_id,
+                    choice: choice
+                });
+        } else // Poll does not exist
+            response.status(404).send('Not found');
     };
 }
