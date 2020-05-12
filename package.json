@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "obtainToken": "functions-framework --target=obtainToken",
-    "getPoll": "functions-framework --target=getPoll"
+    "getPoll": "functions-framework --target=getPoll",
+    "castVote": "functions-framework --target=castVote"
   },
   "author": "Brendan Lestander <blestander@gmail.com>",
   "dependencies": {
