@@ -1,11 +1,6 @@
-const Firestore = require("@google-cloud/firestore");
-
 const { handleCORS, validateJWT, decodeJWT } = require('./utility.js')
+const { db } = require('./db.js')
 
-const db = new Firestore({
-    projectId: "electorate-274912",
-    keyFilename: "credentials.json"
-});
 
 exports.getPoll = handleCORS((request, response) => {
     if ("token" in request.query && "id" in request.query) { // Nothing missing from request
