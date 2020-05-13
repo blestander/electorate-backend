@@ -16,6 +16,26 @@ exports.handleCORS = (func, methods) => {
     }
 };
 
+exports.ensureLogin = func => {
+    return function(request, response) {
+        try {
+            if (validateJWT(request.cookies.electorate-token)) // If the token is valid
+                func(request, response, decodeJWT(request.cookies.electorate-token));
+            else // Invalid token
+                response.cookie( // Wipe cookie
+                    "electorate-token",
+                    "",
+                    {
+                        maxAge: 1
+                    }
+                );
+                response.status(403).send("not_logged_in");
+        } catch (e) { // No token cookie exists
+            response.status(403).send("not_logged_in");
+        }
+    }
+}
+
 exports.buildJWT = (access_token, refresh_token, expires_on, scope, id) => {
     return JWT.sign({
         access: access_token,

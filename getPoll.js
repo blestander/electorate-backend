@@ -1,24 +1,25 @@
-const { handleCORS, validateJWT, decodeJWT } = require('./utility.js')
+const { handleCORS, ensureLogin, validateJWT, decodeJWT } = require('./utility.js')
 const { db } = require('./db.js')
 
 
-exports.getPoll = handleCORS((request, response) => {
-    if ("token" in request.query && "id" in request.query) { // Nothing missing from request
-        let token = request.query.token;
-        if (validateJWT(token)) {
-            let poll_id = request.query.id;
-            let user_id = decodeJWT(token).id;
-            let docRef = db.collection("polls").doc(poll_id);
-            docRef.get()
-                .then(processPollAndRequestBallot(response, docRef, poll_id, user_id))
-                .catch(err => {
-                    response.status(500).send("Server error");
-                })
-        } else
-            response.status(403).send("Forbidden");
-    } else 
+exports.getPoll = handleCORS(
+    ensureLogin(getPollInternal),
+    ["GET"]
+);
+
+function getPollInternal(request, response, token) {
+    if ("id" in request.query) { // Nothing missing from request
+        let poll_id = request.query.id;
+        let user_id = token.id;
+        let docRef = db.collection("polls").doc(poll_id);
+        docRef.get()
+            .then(processPollAndRequestBallot(response, docRef, poll_id, user_id))
+            .catch(err => {
+                response.status(500).send("Server error");
+            })
+    } else
         response.status(400).send("Bad request");
-}, ["GET"]);
+}
 
 function processPollAndRequestBallot(response, docRef, poll_id, user_id) {
     return doc => {
