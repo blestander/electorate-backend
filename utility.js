@@ -2,7 +2,8 @@ const { JWT, JWK } = require("jose");
 
 exports.handleCORS = (func, methods) => {
     return function(request, response) {
-        response.set('Access-Control-Allow-Origin', '*')
+        response.set('Access-Control-Allow-Origin', 'http://localhost:4200/')
+        response.set('Cache-Control', 'private')
 
         if (request.method === "OPTIONS") {
             response.set('Access-Control-Allow-Methods', methods.join(','))
@@ -19,11 +20,11 @@ exports.handleCORS = (func, methods) => {
 exports.ensureLogin = func => {
     return function(request, response) {
         try {
-            if (validateJWT(request.cookies.electorate-token)) // If the token is valid
-                func(request, response, decodeJWT(request.cookies.electorate-token));
+            if (validateJWT(request.cookies.__session)) // If the token is valid
+                func(request, response, decodeJWT(request.cookies.__session));
             else // Invalid token
                 response.cookie( // Wipe cookie
-                    "electorate-token",
+                    "__session",
                     "",
                     {
                         maxAge: 1

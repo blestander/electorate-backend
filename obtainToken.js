@@ -35,14 +35,20 @@ exports.obtainToken = handleCORS((request, response) => {
 
 function buildAndSendToken(response, dis_response) {
     return (id_response) => {
-        response.status(200).send({
-            token: buildJWT(
-                dis_response.body.access_token,
-                dis_response.body.refresh_token,
-                moment().add(dis_response.body.expires_in, 'seconds').format(),
-                dis_response.body.scope.split(" "),
-                id_response.body.id
-            )
-        })
+        token = buildJWT(
+            dis_response.body.access_token,
+            dis_response.body.refresh_token,
+            moment().add(dis_response.body.expires_in, 'seconds').format(),
+            dis_response.body.scope.split(" "),
+            id_response.body.id
+        )
+        response.cookie("__session", token, {
+            maxAge: 5184000000,
+            secure: true,
+            sameSite: "None",
+            httpOnly: true,
+        });
+        console.log(response);
+        response.status(204).send('')
     }
 }
