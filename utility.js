@@ -2,8 +2,9 @@ const { JWT, JWK } = require("jose");
 
 exports.handleCORS = (func, methods) => {
     return function(request, response) {
-        response.set('Access-Control-Allow-Origin', 'http://localhost:4200/')
+        response.set('Access-Control-Allow-Origin', 'http://angular.local:4200')
         response.set('Cache-Control', 'private')
+        response.set('Access-Control-Allow-Credentials', true)
 
         if (request.method === "OPTIONS") {
             response.set('Access-Control-Allow-Methods', methods.join(','))
