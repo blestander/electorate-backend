@@ -30,6 +30,7 @@ function processPollAndRequestBallot(response, docRef, poll_id, user_id) {
                 description: data.description,
                 options: data.options,
                 method: data.method,
+                own: data.owner == user_id
             };
             docRef.collection("ballots").where("voter", "==", user_id).get()
                 .then(processBallotAndRespond(response, poll))
