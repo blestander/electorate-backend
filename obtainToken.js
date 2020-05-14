@@ -9,7 +9,9 @@ const DISCORD_OBTAIN_ID_URL = "https://discordapp.com/api/v6/users/@me";
 const DISCORD_SCOPE = encodeURI("identify guild");
 const DISCORD_REDIRECT_URI = "http://angular.local:4200/auth";
 
-exports.obtainToken = handleCORS((request, response) => {
+exports.obtainToken = (request, response) => {
+    console.log(request.body);
+    console.log(request.params);
     if (!("code" in request.body)) {
         response.status(400).send({error: "no_code"})
         return;
@@ -31,7 +33,7 @@ exports.obtainToken = handleCORS((request, response) => {
             else
                 response.status(error.status).send(error.response.body)
         });
-}, ["POST"]);
+};
 
 function buildAndSendToken(response, dis_response) {
     return (id_response) => {

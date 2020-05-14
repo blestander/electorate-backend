@@ -4,13 +4,15 @@
   "description": "Backend functions for Electorate",
   "main": "index.js",
   "scripts": {
-    "obtainToken": "functions-framework --target=obtainToken",
-    "getPoll": "functions-framework --target=getPoll",
-    "castVote": "functions-framework --target=castVote"
+    "start": "node index.js"
   },
   "author": "Brendan Lestander <blestander@gmail.com>",
   "dependencies": {
     "@google-cloud/firestore": "^3.7.5",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
     "jose": "^1.27.0",
     "moment": "^2.24.0",
     "superagent": "^5.2.2"

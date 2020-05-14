@@ -21,8 +21,7 @@ exports.handleCORS = (func, methods) => {
 exports.ensureLogin = func => {
     return function(request, response) {
         try {
-            console.log(request.cookies.__session);
-            if (validateJWT(request.cookies.__session)) // If the token is valid
+            if (request.cookies.__session && validateJWT(request.cookies.__session)) // If the token is valid
                 func(request, response, decodeJWT(request.cookies.__session));
             else // Invalid token
                 response.cookie( // Wipe cookie
@@ -52,7 +51,7 @@ exports.buildJWT = (access_token, refresh_token, expires_on, scope, id) => {
     });
 };
 
-exports.validateJWT = (token) => {
+function validateJWT(token) {
     try {
         return JWT.verify(token, JWK.asKey(process.env.TOKEN_KEY))
             && new Date(JWT.decode(token).expires_on) > Date.now();
@@ -61,7 +60,9 @@ exports.validateJWT = (token) => {
         return false;
     }
 };
+exports.validateJWT = validateJWT;
 
-exports.decodeJWT = (token) => {
+function decodeJWT(token) {
     return JWT.decode(token);
 }
+exports.decodeJWT = decodeJWT;

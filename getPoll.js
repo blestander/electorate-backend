@@ -2,10 +2,7 @@ const { handleCORS, ensureLogin, validateJWT, decodeJWT } = require('./utility.j
 const { db } = require('./db.js')
 
 
-exports.getPoll = handleCORS(
-    ensureLogin(getPollInternal),
-    ["GET"]
-);
+exports.getPoll = ensureLogin(getPollInternal);
 
 function getPollInternal(request, response, token) {
     if ("id" in request.query) { // Nothing missing from request
