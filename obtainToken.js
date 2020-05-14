@@ -48,7 +48,6 @@ function buildAndSendToken(response, dis_response) {
             sameSite: "None",
             httpOnly: true,
         });
-        console.log(response);
         response.status(200).send('')
     }
 }
