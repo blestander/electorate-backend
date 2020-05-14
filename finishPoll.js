@@ -35,6 +35,9 @@ function processPollAndRequestBallots(request, response, user_id, pollRef) {
 
 function processBallotsAndSaveResults(request, response, pollRef, method) {
     return snapshot => {
-        response.status(200).send({});
+        if (snapshot.size > 0) { // Someone has voted
+            response.status(200).send({});
+        } else // Nobody has voted
+            response.status(409).send("no_votes");
     }
 }
