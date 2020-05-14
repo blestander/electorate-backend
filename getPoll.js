@@ -28,7 +28,8 @@ function processPollAndRequestBallot(response, docRef, poll_id, user_id) {
                 description: data.description,
                 options: data.options,
                 method: data.method,
-                own: data.owner == user_id
+                own: data.owner == user_id,
+                finished: data.finished
             };
             docRef.collection("ballots").where("voter", "==", user_id).get()
                 .then(processBallotAndRespond(response, poll))
@@ -44,7 +45,7 @@ function processPollAndRequestBallot(response, docRef, poll_id, user_id) {
 function processBallotAndRespond(response, poll) {
     return docs => {
         poll.has_voted = (docs.size != 0);
-        poll.can_vote = !poll.has_voted;
+        poll.can_vote = !poll.has_voted && !poll.finished;
 
         if (poll.has_voted)
             docs.forEach(doc => poll.choice = doc.data().choice);
