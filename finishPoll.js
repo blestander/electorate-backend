@@ -22,7 +22,7 @@ function processPollAndRequestBallots(request, response, user_id, pollRef) {
             if (poll.owner == user_id) // If this user owns the poll, proceed
                 if (!poll.finished) { // Poll is still open
                     pollRef.collection("ballots").get()
-                        .then(processBallotsAndSaveResults(request, response, pollRef, poll.method))
+                        .then(processBallotsAndSaveResults(request, response, pollRef, poll.method, poll.options))
                         .catch(err => response.status(500).send('Server error'));
                 } else
                     response.status(409).send("finished");
@@ -33,11 +33,33 @@ function processPollAndRequestBallots(request, response, user_id, pollRef) {
     }
 }
 
-function processBallotsAndSaveResults(request, response, pollRef, method) {
+function processBallotsAndSaveResults(request, response, pollRef, method, options) {
     return snapshot => {
         if (snapshot.size > 0) { // Someone has voted
+            let results = generateResults(method, options, snapshot);
+            console.log(results);
             response.status(200).send({});
         } else // Nobody has voted
             response.status(409).send("no_votes");
     }
+}
+
+function generateResults(method, options, ballots) {
+    switch (method) {
+        case "fptp": // First Past the Post
+            return generateFPTPResults(options, ballots);
+    }
+}
+
+function generateFPTPResults(options, ballots) {
+    counts = {};
+
+    options.forEach(option => counts[option] = 0);
+
+    ballots.forEach(doc => {
+        let ballot = doc.data();
+        counts[ballot.choice]++;
+    });
+    
+    return counts;
 }
