@@ -21,7 +21,7 @@ function processPollAndRequestBallots(request, response, user_id, pollRef) {
             let poll = snapshot.data();
             if (poll.owner == user_id) // If this user owns the poll, proceed
                 if (!poll.finished) { // Poll is still open
-                    pollRef.collection("ballot").get()
+                    pollRef.collection("ballots").get()
                         .then(processBallotsAndSaveResults(request, response, pollRef, poll.method))
                         .catch(err => response.status(500).send('Server error'));
                 } else

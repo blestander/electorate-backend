@@ -16,7 +16,7 @@ const corsOptions = {
 var app = express();
 app.use(cookieParser());
 app.use(cors(corsOptions));
-app.use(bodyParser());
+app.use(bodyParser.json());
 
 app.get('/helloHttp', (request, response) => {
     response.send("Hello, world!")
