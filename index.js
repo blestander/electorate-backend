@@ -9,7 +9,7 @@ const { castVote } = require('./castVote.js');
 const { finishPoll } = require('./finishPoll.js')
 
 const corsOptions = {
-    origin: 'http://angular.local:4200',
+    origin: process.env.ORIGIN,
     credentials: true
 }
 

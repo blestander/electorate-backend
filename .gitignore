@@ -126,3 +126,6 @@ deploy_env/
 
 # Google Cloud Credentials
 credentials.json
+
+# Google App Engine Deployment
+app.yaml
