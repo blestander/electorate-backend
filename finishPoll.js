@@ -37,8 +37,12 @@ function processBallotsAndSaveResults(request, response, pollRef, method, option
     return snapshot => {
         if (snapshot.size > 0) { // Someone has voted
             let results = generateResults(method, options, snapshot);
-            console.log(results);
-            response.status(200).send({});
+            let changes = {
+                finished: true,
+                results: results
+            };
+            pollRef.set(changes, {merge: true}).then(() => response.status(200).send(changes))
+                .catch(err => response.status(500).send('Server error'));
         } else // Nobody has voted
             response.status(409).send("no_votes");
     }
