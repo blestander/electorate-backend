@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const { obtainToken } = require('./obtainToken.js');
 const { getPoll } = require('./getPoll.js');
 const { castVote } = require('./castVote.js');
+const { finishPoll } = require('./finishPoll.js')
 
 const corsOptions = {
     origin: 'http://angular.local:4200',
@@ -24,5 +25,6 @@ app.get('/helloHttp', (request, response) => {
 app.post('/obtainToken', obtainToken);
 app.get('/getPoll', getPoll);
 app.post('/castVote', castVote);
+app.post('/finishPoll', finishPoll);
 
 app.listen(process.env.PORT);
