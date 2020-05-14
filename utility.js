@@ -23,7 +23,7 @@ exports.ensureLogin = func => {
         try {
             if (request.cookies.__session && validateJWT(request.cookies.__session)) // If the token is valid
                 func(request, response, decodeJWT(request.cookies.__session));
-            else // Invalid token
+            else { // Invalid token
                 response.cookie( // Wipe cookie
                     "__session",
                     "",
@@ -32,6 +32,7 @@ exports.ensureLogin = func => {
                     }
                 );
                 response.status(403).send("not_logged_in");
+            }
         } catch (e) { // No token cookie exists
             console.error(e);
             response.status(403).send("not_logged_in");
