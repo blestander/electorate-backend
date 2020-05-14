@@ -18,7 +18,7 @@ exports.obtainToken = (request, response) => {
         .send(`client_id=${process.env.CLIENT_ID}`)
         .send(`client_secret=${process.env.CLIENT_SECRET}`)
         .send(`scope=${DISCORD_SCOPE}`)
-        .send(`redirect_uri=${DISCORD_REDIRECT_URI}`)
+        .send(`redirect_uri=${process.env.REDIRECT_URI}`)
         .send("grant_type=authorization_code")
         .send(`code=${request.body.code}`)
         .then((dis_response) => {
