@@ -6,7 +6,8 @@ exports.createPoll = ensureLogin(createPollInternal);
 function createPollInternal(request, response, token) {
     let poll = {
         ...request.body,
-        owner: token.id
+        owner: token.id,
+        finished: false
     }
     db.collection('polls').add(poll)
         .then(snapshot => {
