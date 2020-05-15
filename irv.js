@@ -6,7 +6,6 @@ exports.generateIRVResults = (options, ballotDocs) => {
         ballots.push(doc.data().choice);
         total += 1;
     });
-    console.log(ballots);
 
     // Setup
     let results = [];
@@ -17,7 +16,6 @@ exports.generateIRVResults = (options, ballotDocs) => {
 
     // Assigned all ballots to their initial vote
     ballots.forEach(ballot => {
-        console.log(ballot[0]);
         votes[ballot[0]].push(ballot);
     });
     
@@ -73,14 +71,12 @@ exports.generateIRVResults = (options, ballotDocs) => {
 
         // Reassign reorganized votes
         reorganizedVotes.forEach(vote => {
-            console.log(vote);
             if (vote.length >= 1)
                 votes[vote[0]].push(vote);
             else
                 total--;
         });
         
-        console.log(votes);
         // Generate new counts and add to results
         counts = generateCounts(votes);
         results.push(counts);
