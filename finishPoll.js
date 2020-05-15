@@ -1,5 +1,6 @@
 const { ensureLogin } = require('./utility.js');
 const { db } = require('./db.js');
+const { generateIRVResults } = require('./irv.js');
 
 exports.finishPoll = ensureLogin(finishPollInternal);
 
@@ -23,7 +24,10 @@ function processPollAndRequestBallots(request, response, user_id, pollRef) {
                 if (!poll.finished) { // Poll is still open
                     pollRef.collection("ballots").get()
                         .then(processBallotsAndSaveResults(request, response, pollRef, poll.method, poll.options))
-                        .catch(err => response.status(500).send('Server error'));
+                        .catch(err => {
+                            console.log(err);
+                            response.status(500).send('Server error');
+                        });
                 } else
                     response.status(409).send("finished");
             else
@@ -52,6 +56,8 @@ function generateResults(method, options, ballots) {
     switch (method) {
         case "fptp": // First Past the Post
             return generateFPTPResults(options, ballots);
+        case "irv": // Instant Runoff Voting
+            return generateIRVResults(options, ballots)
     }
 }
 
