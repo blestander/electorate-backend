@@ -6,7 +6,8 @@ const bodyParser = require('body-parser');
 const { obtainToken } = require('./obtainToken.js');
 const { getPoll } = require('./getPoll.js');
 const { castVote } = require('./castVote.js');
-const { finishPoll } = require('./finishPoll.js')
+const { finishPoll } = require('./finishPoll.js');
+const { createPoll } = require('./createPoll.js');
 
 const corsOptions = {
     origin: process.env.ORIGIN,
@@ -26,5 +27,6 @@ app.post('/obtainToken', obtainToken);
 app.get('/getPoll', getPoll);
 app.post('/castVote', castVote);
 app.post('/finishPoll', finishPoll);
+app.post('/createPoll', createPoll);
 
 app.listen(process.env.PORT);
