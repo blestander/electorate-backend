@@ -22,7 +22,7 @@ function checkPollAndRequestBallot(response, user_id, choice, docRef) {
                 response.status(409).send({
                     error: "finished"
                 });
-            else if (!docdata.options.includes(choice))
+            else if (typeof(choice) == "string" && !docdata.options.includes(choice))
                 response.status(409).send({
                     error: "invalid choice"
                 });
