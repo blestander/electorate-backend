@@ -15,7 +15,8 @@ function processAndReturnPolls(request, response, token) {
             let poll = {
                 name: data.name,
                 description: data.description,
-                finished: data.finished
+                finished: data.finished,
+                id: doc.id
             }
             results.push(poll);
         });
