@@ -93,10 +93,27 @@ function generateCounts(votes) {
 }
 
 function hasWinner(counts, total) {
-    let winCondition = Math.ceil(total / 2);
+    // Check for actual winner
+    let winCondition = calculateWinCondition(total);
     for (const option in counts) {
         if (counts[option] >= winCondition)
             return true;
     }
-    return false;
+
+    // Check for ties
+    let tie = null;
+    for (const option in counts) {
+        if (tie == null)
+            tie = counts[option];
+        else if (counts[option] != tie)
+            return false;
+    }
+    return true;
+}
+
+function calculateWinCondition(total) {
+    let result = Math.ceil(total / 2);
+    if (total % 2 == 0)
+        result++;
+    return result;
 }
