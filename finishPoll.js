@@ -57,7 +57,9 @@ function generateResults(method, options, ballots) {
         case "fptp": // First Past the Post
             return generateFPTPResults(options, ballots);
         case "irv": // Instant Runoff Voting
-            return generateIRVResults(options, ballots)
+            return generateIRVResults(options, ballots);
+        case "approval": // Approval Voting
+            return generateApprovalResults(options, ballots);
     }
 }
 
@@ -71,5 +73,23 @@ function generateFPTPResults(options, ballots) {
         counts[ballot.choice]++;
     });
     
+    return counts;
+}
+
+function generateApprovalResults(options, ballots) {
+    counts = {};
+
+    options.forEach(option => counts[option] = 0);
+
+    ballots.forEach(doc => {
+        let ballot = doc.data();
+        let choice = ballot.choice;
+        
+        options.forEach(option => {
+            if (choice.includes(option))
+                counts[option]++;
+        });
+    });
+
     return counts;
 }
