@@ -30,5 +30,6 @@ app.post('/castVote', castVote);
 app.post('/finishPoll', finishPoll);
 app.post('/createPoll', createPoll);
 app.get('/listPolls', listPolls);
+app.post('/deletePoll', finishPoll);
 
 app.listen(process.env.PORT);
