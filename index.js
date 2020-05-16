@@ -8,6 +8,7 @@ const { getPoll } = require('./getPoll.js');
 const { castVote } = require('./castVote.js');
 const { finishPoll } = require('./finishPoll.js');
 const { createPoll } = require('./createPoll.js');
+const { listPolls } = require('./listPolls.js');
 
 const corsOptions = {
     origin: process.env.ORIGIN,
@@ -28,5 +29,6 @@ app.get('/getPoll', getPoll);
 app.post('/castVote', castVote);
 app.post('/finishPoll', finishPoll);
 app.post('/createPoll', createPoll);
+app.get('/listPolls', listPolls);
 
 app.listen(process.env.PORT);
