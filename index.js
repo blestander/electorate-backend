@@ -9,6 +9,7 @@ const { castVote } = require('./castVote.js');
 const { finishPoll } = require('./finishPoll.js');
 const { createPoll } = require('./createPoll.js');
 const { listPolls } = require('./listPolls.js');
+const { deletePoll } = require('./deletePoll.js');
 
 const corsOptions = {
     origin: process.env.ORIGIN,
@@ -30,6 +31,6 @@ app.post('/castVote', castVote);
 app.post('/finishPoll', finishPoll);
 app.post('/createPoll', createPoll);
 app.get('/listPolls', listPolls);
-app.post('/deletePoll', finishPoll);
+app.post('/deletePoll', deletePoll);
 
 app.listen(process.env.PORT);
