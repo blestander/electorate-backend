@@ -1,13 +1,15 @@
 exports.generateIRVResults = (options, ballotDocs) => {
     // Retrieve all ballots
     let ballots = [];
-    let total = 0;
     ballotDocs.forEach(doc => {
         ballots.push(doc.data().choice);
-        total += 1;
     });
+    return irv(options, ballots);
+}
 
+function irv(options, ballots) {
     // Setup
+    let total = ballots.length;
     let results = [];
     let votes = {}
     options.forEach(option => {
