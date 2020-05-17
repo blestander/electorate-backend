@@ -11,6 +11,7 @@ const { createPoll } = require('./createPoll.js');
 const { listPolls } = require('./listPolls.js');
 const { deletePoll } = require('./deletePoll.js');
 const { logout } = require('./logout.js');
+const { getHistory } = require('./history.js') 
 
 const corsOptions = {
     origin: process.env.ORIGIN,
@@ -34,5 +35,6 @@ app.post('/createPoll', createPoll);
 app.get('/listPolls', listPolls);
 app.post('/deletePoll', deletePoll);
 app.get('/logout', logout);
+app.get('/history', getHistory);
 
 app.listen(process.env.PORT);
