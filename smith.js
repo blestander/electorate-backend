@@ -16,7 +16,7 @@ exports.generateSmithIRVResults = (options, ballotDocs) => {
     }).filter(ballot => ballot.length > 0);
 
     // Calculate IRV results
-    irvResults = irv(options, irvBallots);
+    irvResults = irv(smith.set, irvBallots);
 
     return {
         smith: smith,
