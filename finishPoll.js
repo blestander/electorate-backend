@@ -1,6 +1,7 @@
 const { ensureLogin } = require('./utility.js');
 const { db } = require('./db.js');
 const { generateIRVResults } = require('./irv.js');
+const { generateSmithIRVResults } = require('./smith.js');
 
 exports.finishPoll = ensureLogin(finishPollInternal);
 
@@ -60,6 +61,8 @@ function generateResults(method, options, ballots) {
             return generateIRVResults(options, ballots);
         case "approval": // Approval Voting
             return generateApprovalResults(options, ballots);
+        case "smithirv": // Smith/IRV
+            return generateSmithIRVResults(options, ballots);
     }
 }
 

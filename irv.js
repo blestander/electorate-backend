@@ -85,6 +85,7 @@ function irv(options, ballots) {
     } while (!hasWinner(counts, total));
     return results;
 }
+exports.irv = irv;
 
 function generateCounts(votes) {
     let counts = {};
