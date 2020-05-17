@@ -14,7 +14,6 @@ function processBallotsAndStartPollRequests(response) {
         else { // Something was voted on
             let refs = [];
             snapshot.forEach(doc => refs.push(doc.ref.parent.parent))
-            console.log(refs.length);
             let ref = refs.pop();
             ref.get().then(processPoll(
                 response,
@@ -28,13 +27,12 @@ function processBallotsAndStartPollRequests(response) {
 function processPoll(response, refs, polls) {
     return snapshot => {
         let doc = snapshot.data();
-        let poll = {
+        polls.push({
             name: doc.name,
             description: doc.description,
-            finished: doc.finished
-        };
-        polls.push(poll);
-        console.log(refs.length);
+            finished: doc.finished,
+            id: snapshot.id
+        });
         if (refs.length > 0) {
             let ref = refs.pop();
             ref.get().then(processPoll(
