@@ -63,6 +63,8 @@ function generateResults(method, options, ballots) {
             return generateApprovalResults(options, ballots);
         case "smithirv": // Smith/IRV
             return generateSmithIRVResults(options, ballots);
+        case "cav": // Combined Approval Voting
+            return generateCAVResults(options, ballots);
     }
 }
 
@@ -95,4 +97,18 @@ function generateApprovalResults(options, ballots) {
     });
 
     return counts;
+}
+
+function generateCAVResults(options, ballots) {
+    let scores = {};
+
+    options.forEach(option => scores[option] = 0);
+
+    ballots.forEach(doc => {
+        let choice = doc.data().choice;
+
+        options.forEach(option => scores[option] += choice[option])
+    });
+
+    return scores;
 }
