@@ -2,6 +2,7 @@ const { ensureLogin } = require('./utility.js');
 const { db } = require('./db.js');
 const { generateIRVResults } = require('./irv.js');
 const { generateSmithIRVResults } = require('./smith.js');
+const { handleWebhook } = require('./webhook.js');
 
 exports.finishPoll = ensureLogin(finishPollInternal);
 
@@ -50,7 +51,8 @@ function processBallotsAndSaveResults(response, pollRef, method, options, webhoo
             pollRef.set(changes, {merge: true})
                 .then(() => {
                     response.status(200).send(changes);
-                    console.log(webhook);
+                    if (webhook)
+                        handleWebhook(webhook, method, options, changes);
                 }).catch(err => response.status(500).send('Server error'));
         } else // Nobody has voted
             response.status(409).send("no_votes");
