@@ -1,3 +1,5 @@
+const superagent = require('superagent');
+
 exports.handleWebhook = (webhook, name, method, options, results) => {
     try {
         let resultString = generateWebhookOutput(method, results);
@@ -7,7 +9,16 @@ exports.handleWebhook = (webhook, name, method, options, results) => {
             '**__Results__**',
             `${resultString}`
         ].join('\n');
-        console.log(output);
+
+        superagent.post(webhook)
+            .send({
+                content: output,
+                username: "Electorate",
+            })
+            .then(
+                value => {},
+                error => console.error(error)
+            );
     } catch (e) {
         console.error(e);
     }
