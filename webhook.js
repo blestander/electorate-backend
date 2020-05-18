@@ -1,6 +1,12 @@
-exports.handleWebhook = (webhook, method, options, results) => {
+exports.handleWebhook = (webhook, name, method, options, results) => {
     try {
-        let output = generateWebhookOutput(method, results);
+        let resultString = generateWebhookOutput(method, results);
+        let output = [
+            `**The poll \"${name}\" has concluded**`,
+            '',
+            '**__Results__**',
+            `${resultString}`
+        ].join('\n');
         console.log(output);
     } catch (e) {
         console.error(e);

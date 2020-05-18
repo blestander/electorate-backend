@@ -22,11 +22,10 @@ function processPollAndRequestBallots(response, user_id, pollRef) {
     return snapshot => {
         if (snapshot.exists) { // This poll in fact exists
             let poll = snapshot.data();
-            let webhook = poll.webhook;
             if (poll.owner == user_id) // If this user owns the poll, proceed
                 if (!poll.finished) { // Poll is still open
                     pollRef.collection("ballots").get()
-                        .then(processBallotsAndSaveResults(response, pollRef, poll.method, poll.options, webhook))
+                        .then(processBallotsAndSaveResults(response, pollRef, poll.method, poll.options, poll.name, poll.webhook))
                         .catch(err => {
                             console.log(err);
                             response.status(500).send('Server error');
@@ -40,7 +39,7 @@ function processPollAndRequestBallots(response, user_id, pollRef) {
     }
 }
 
-function processBallotsAndSaveResults(response, pollRef, method, options, webhook) {
+function processBallotsAndSaveResults(response, pollRef, method, options, name, webhook) {
     return snapshot => {
         if (snapshot.size > 0) { // Someone has voted
             let results = generateResults(method, options, snapshot);
@@ -52,7 +51,7 @@ function processBallotsAndSaveResults(response, pollRef, method, options, webhoo
                 .then(() => {
                     response.status(200).send(changes);
                     if (webhook)
-                        handleWebhook(webhook, method, options, results);
+                        handleWebhook(webhook, name, method, options, results);
                 }).catch(err => response.status(500).send('Server error'));
         } else // Nobody has voted
             response.status(409).send("no_votes");
