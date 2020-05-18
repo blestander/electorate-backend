@@ -42,8 +42,7 @@ function generateSimpleOutput(results) {
     let lines = [];
     for (let i = 1; i <= prunedGroupings.length; i++)
         lines.push(
-            `${i}: ${prunedGroupings[prunedGroupings.length - i].join(', ')}`
-                .concat(` - ${results[prunedGroupings[prunedGroupings.length - i][0]]}`)
+            generateLine(results, prunedGroupings, i, prunedGroupings.length - i)
         );
 
     return lines.join('\n');
@@ -62,15 +61,14 @@ function generateCAVOutput(results) {
     let lines = []
     for (let i = 1; i <= positiveGroupings.length; i++)
         lines.push(
-            `${i}: ${positiveGroupings[positiveGroupings.length - i].join(', ')}`
-                .concat(` - ${results[positiveGroupings[positiveGroupings.length - i][0]]}`)
+            generateLine(results, positiveGroupings, i, positiveGroupings.length - i)
         );
 
     // Build negative lines
     let isZero = Object.values(results).includes(0);
     for (let i = isZero ? 1 : 0, j = positiveGroupings.length + 1; i < negativeGroupings.length; i++, j++)
         lines.push(
-            `${j}: ${negativeGroupings[i].join(', ')} - ${results[negativeGroupings[i][0]]}`
+            generateLine(results, negativeGroupings, j, i)
         );
 
     return lines.join('\n');
@@ -91,4 +89,8 @@ function generatePositiveGroupings(results) {
 
     // Eliminate empty space in groupings array
     return rawGroupings.filter(x => Array.isArray(x));
+}
+
+function generateLine(results, array, rank, index) {
+    return `${rank}: ${array[index].join(', ')} - ${results[array[index][0]]}`;
 }
