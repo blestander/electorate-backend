@@ -52,7 +52,7 @@ function processBallotsAndSaveResults(response, pollRef, method, options, webhoo
                 .then(() => {
                     response.status(200).send(changes);
                     if (webhook)
-                        handleWebhook(webhook, method, options, changes);
+                        handleWebhook(webhook, method, options, results);
                 }).catch(err => response.status(500).send('Server error'));
         } else // Nobody has voted
             response.status(409).send("no_votes");
