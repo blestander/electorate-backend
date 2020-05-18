@@ -31,6 +31,8 @@ function generateWebhookOutput(method, results) {
             return generateSimpleOutput(results);
         case "cav":
             return generateCAVOutput(results);
+        case "irv":
+            return generateIRVOutput(results);
     }
 }
 
@@ -70,6 +72,28 @@ function generateCAVOutput(results) {
         lines.push(
             generateLine(results, negativeGroupings, j, i)
         );
+
+    return lines.join('\n');
+}
+
+function generateIRVOutput(results) {
+    // Build lines for finalists
+    let lines = [];
+    let initialGroupings = generatePositiveGroupings(results[results.length - 1]);
+    for (let i = 1; i <= initialGroupings.length; i++)
+        lines.push(
+            generateLine(results[results.length - 1], initialGroupings, i, initialGroupings.length - i)
+        );
+
+    // Build lines for those eliminated at each stage
+    for (let i = results.length - 2, j = initialGroupings.length + 1; i >= 0; i--, j++) {
+        let lastSet = Object.keys(results[i + 1]);
+        let thisSet = Object.keys(results[i]);
+        let omitted = thisSet.filter(x => !lastSet.includes(x));
+        lines.push(
+            `${j}: ${omitted.join(', ')} - ${results[i][omitted[0]]}`
+        );
+    }
 
     return lines.join('\n');
 }
