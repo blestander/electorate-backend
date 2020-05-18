@@ -33,6 +33,8 @@ function generateWebhookOutput(method, results) {
             return generateCAVOutput(results);
         case "irv":
             return generateIRVOutput(results);
+        case "smithirv":
+            return generateSmithIRVOutput(results);
     }
 }
 
@@ -96,6 +98,14 @@ function generateIRVOutput(results) {
     }
 
     return lines.join('\n');
+}
+
+function generateSmithIRVOutput(results) {
+    return [
+        `Dominating set: ${results.smith.set.join(', ')}`,
+        '__Results Within Dominating Set__',
+        generateIRVOutput(results.irv)
+    ].join('\n');
 }
 
 function generatePositiveGroupings(results) {
