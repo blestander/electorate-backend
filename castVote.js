@@ -2,9 +2,9 @@ const { ensureLogin, decodeJWT } = require("./utility.js");
 const { db } = require('./db.js')
 
 exports.castVote = ensureLogin((request, response, token) => {
-    if ("id" in request.body && "choice" in request.body) { // Nothing missing
+    if ("choice" in request.body) { // Nothing missing
         let user_id = token.id;
-        let poll_id = request.body.id;
+        let poll_id = request.params.id;
         let choice = request.body.choice;
         let docRef = db.collection('polls').doc(poll_id);
         docRef.get()
