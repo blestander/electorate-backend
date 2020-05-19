@@ -7,15 +7,12 @@ const { handleWebhook } = require('./webhook.js');
 exports.finishPoll = ensureLogin(finishPollInternal);
 
 function finishPollInternal(request, response, token) {
-    if ("id" in request.body) { // Everything present in request
-        let poll_id = request.body.id;
-        let user_id = token.id;
-        let docRef = db.collection("polls").doc(poll_id);
-        docRef.get()
-            .then(processPollAndRequestBallots(response, user_id, docRef))
-            .catch(err => response.status(500).send('Server error'));
-    } else // Incomplete request
-        response.status(400).send('Bad request');
+    let poll_id = request.params.id;
+    let user_id = token.id;
+    let docRef = db.collection("polls").doc(poll_id);
+    docRef.get()
+        .then(processPollAndRequestBallots(response, user_id, docRef))
+        .catch(err => response.status(500).send('Server error'));
 }
 
 function processPollAndRequestBallots(response, user_id, pollRef) {

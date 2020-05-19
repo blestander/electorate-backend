@@ -32,7 +32,7 @@ app.get('/helloHttp', (request, response) => {
 app.post('/api/login', obtainToken);
 app.get('/api/poll/:id', getPoll);
 app.post('/api/poll/:id/vote', castVote);
-app.post('/api/finishPoll', finishPoll);
+app.post('/api/poll/:id/finish', finishPoll);
 app.post('/api/createPoll', createPoll);
 app.get('/api/polls', listPolls);
 app.post('/api/deletePoll', deletePoll);
