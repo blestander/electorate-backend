@@ -23,18 +23,20 @@ app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
+// Test Route
 app.get('/helloHttp', (request, response) => {
     response.send("Hello, world!")
 });
 
-app.post('/obtainToken', obtainToken);
-app.get('/getPoll', getPoll);
-app.post('/castVote', castVote);
-app.post('/finishPoll', finishPoll);
-app.post('/createPoll', createPoll);
-app.get('/listPolls', listPolls);
-app.post('/deletePoll', deletePoll);
-app.get('/logout', logout);
-app.get('/history', getHistory);
+// API Routes
+app.post('/api/obtainToken', obtainToken);
+app.get('/api/getPoll', getPoll);
+app.post('/api/castVote', castVote);
+app.post('/api/finishPoll', finishPoll);
+app.post('/api/createPoll', createPoll);
+app.get('/api/listPolls', listPolls);
+app.post('/api/deletePoll', deletePoll);
+app.get('/api/logout', logout);
+app.get('/api/history', getHistory);
 
 app.listen(process.env.PORT);
