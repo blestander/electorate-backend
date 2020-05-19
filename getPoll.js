@@ -5,17 +5,14 @@ const { db } = require('./db.js')
 exports.getPoll = ensureLogin(getPollInternal);
 
 function getPollInternal(request, response, token) {
-    if ("id" in request.query) { // Nothing missing from request
-        let poll_id = request.query.id;
-        let user_id = token.id;
-        let docRef = db.collection("polls").doc(poll_id);
-        docRef.get()
-            .then(processPollAndRequestBallot(response, docRef, poll_id, user_id))
-            .catch(err => {
-                response.status(500).send("Server error");
-            })
-    } else
-        response.status(400).send("Bad request");
+    let poll_id = request.params.id;
+    let user_id = token.id;
+    let docRef = db.collection("polls").doc(poll_id);
+    docRef.get()
+        .then(processPollAndRequestBallot(response, docRef, poll_id, user_id))
+        .catch(err => {
+            response.status(500).send("Server error");
+        });
 }
 
 function processPollAndRequestBallot(response, docRef, poll_id, user_id) {
