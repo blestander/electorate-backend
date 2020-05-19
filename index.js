@@ -35,7 +35,7 @@ app.post('/api/poll/:id/vote', castVote);
 app.post('/api/poll/:id/finish', finishPoll);
 app.post('/api/createPoll', createPoll);
 app.get('/api/polls', listPolls);
-app.post('/api/deletePoll', deletePoll);
+app.delete('/api/poll/:id', deletePoll);
 app.get('/api/logout', logout);
 app.get('/api/history', getHistory);
 

@@ -2,7 +2,7 @@ const { ensureLogin } = require('./utility.js');
 const { db } = require('./db.js');
 
 exports.deletePoll = ensureLogin((request, response, token) => {
-    let docRef = db.collection('polls').doc(request.body.id)
+    let docRef = db.collection('polls').doc(request.params.id)
     docRef.get()
         .then(validateRequestAndDeletePoll(response, token, docRef))
         .catch(err => response.status(500).send('Server error'));
