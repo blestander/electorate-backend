@@ -34,7 +34,7 @@ app.get('/api/getPoll', getPoll);
 app.post('/api/castVote', castVote);
 app.post('/api/finishPoll', finishPoll);
 app.post('/api/createPoll', createPoll);
-app.get('/api/listPolls', listPolls);
+app.get('/api/polls', listPolls);
 app.post('/api/deletePoll', deletePoll);
 app.get('/api/logout', logout);
 app.get('/api/history', getHistory);
