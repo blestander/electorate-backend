@@ -11,6 +11,8 @@ function createPollInternal(request, response, token) {
     }
     db.collection('polls').add(poll)
         .then(snapshot => {
-            response.status(200).send({id: snapshot.id});
+            response.status(201)
+                .set('Location', `/poll/${snapshot.id}`)
+                .send(poll);
         })
 }

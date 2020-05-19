@@ -15,7 +15,8 @@ const { getHistory } = require('./history.js')
 
 const corsOptions = {
     origin: process.env.ORIGIN,
-    credentials: true
+    credentials: true,
+    exposedHeaders: 'Location'
 }
 
 var app = express();
@@ -33,7 +34,7 @@ app.post('/api/login', obtainToken);
 app.get('/api/poll/:id', getPoll);
 app.post('/api/poll/:id/vote', castVote);
 app.post('/api/poll/:id/finish', finishPoll);
-app.post('/api/createPoll', createPoll);
+app.post('/api/poll/create', createPoll);
 app.get('/api/polls', listPolls);
 app.delete('/api/poll/:id', deletePoll);
 app.get('/api/logout', logout);
