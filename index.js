@@ -29,7 +29,7 @@ app.get('/helloHttp', (request, response) => {
 });
 
 // API Routes
-app.post('/api/obtainToken', obtainToken);
+app.post('/api/login', obtainToken);
 app.get('/api/getPoll', getPoll);
 app.post('/api/castVote', castVote);
 app.post('/api/finishPoll', finishPoll);
