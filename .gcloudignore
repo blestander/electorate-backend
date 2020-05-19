@@ -18,3 +18,4 @@ node_modules
 
 !credentials.json
 !app.yaml
+!static/

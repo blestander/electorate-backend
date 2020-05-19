@@ -129,3 +129,6 @@ credentials.json
 
 # Google App Engine Deployment
 app.yaml
+
+# Static files to host
+static/
