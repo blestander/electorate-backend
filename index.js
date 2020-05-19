@@ -11,7 +11,8 @@ const { createPoll } = require('./createPoll.js');
 const { listPolls } = require('./listPolls.js');
 const { deletePoll } = require('./deletePoll.js');
 const { logout } = require('./logout.js');
-const { getHistory } = require('./history.js') 
+const { getHistory } = require('./history.js');
+const { hostAngular } = require('./angular.js');
 
 const corsOptions = {
     origin: process.env.ORIGIN,
@@ -23,11 +24,18 @@ var app = express();
 app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
+app.use('/', express.static('static'));
 
 // Test Route
 app.get('/helloHttp', (request, response) => {
     response.send("Hello, world!")
 });
+
+// Angular Routes
+app.route('/create', hostAngular);
+app.route('/poll/:id', hostAngular);
+app.route('/auth', hostAngular);
+app.route('/history', hostAngular);
 
 // API Routes
 app.post('/api/login', obtainToken);
