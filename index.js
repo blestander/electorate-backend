@@ -33,10 +33,10 @@ app.get('/helloHttp', (request, response) => {
 });
 
 // Angular Routes
-app.route('/create', hostAngular);
-app.route('/poll/:id', hostAngular);
-app.route('/auth', hostAngular);
-app.route('/history', hostAngular);
+app.get('/create', hostAngular);
+app.get('/poll/:id', hostAngular);
+app.get('/auth', hostAngular);
+app.get('/history', hostAngular);
 
 // API Routes
 app.post('/api/login', obtainToken);
