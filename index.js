@@ -13,6 +13,7 @@ const { deletePoll } = require('./deletePoll.js');
 const { logout } = require('./logout.js');
 const { getHistory } = require('./history.js');
 const { hostAngular } = require('./angular.js');
+const { checkLogin } = require('./check.js');
 
 const corsOptions = {
     origin: process.env.ORIGIN,
@@ -47,5 +48,6 @@ app.get('/api/polls', listPolls);
 app.delete('/api/poll/:id', deletePoll);
 app.get('/api/logout', logout);
 app.get('/api/history', getHistory);
+app.get('/api/check', checkLogin);
 
 app.listen(process.env.PORT);
