@@ -44,8 +44,8 @@ function buildAndSendToken(response, dis_response) {
         )
         response.cookie("__session", token, {
             maxAge: 5184000000,
-            secure: false,
-            sameSite: "None",
+            secure: process.env.PROD === "true",
+            sameSite: process.env.PROD === "true" ? "Lax" : "None",
             httpOnly: true,
         });
         response.status(200).send('')

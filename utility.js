@@ -28,7 +28,10 @@ exports.ensureLogin = func => {
                     "__session",
                     "",
                     {
-                        maxAge: 1
+                        maxAge: 1,
+                        secure: process.env.PROD === "true",
+                        sameSite: process.env.PROD === "true" ? "Lax" : "None",
+                        httpOnly: true
                     }
                 );
                 response.status(403).send("not_logged_in");
