@@ -67,6 +67,8 @@ function generateResults(method, options, ballots) {
             return generateSmithIRVResults(options, ballots);
         case "cav": // Combined Approval Voting
             return generateCAVResults(options, ballots);
+        case "mbc": // Modified Borda Count
+            return generateMBCResults(options, ballots);
     }
 }
 
@@ -110,6 +112,20 @@ function generateCAVResults(options, ballots) {
         let choice = doc.data().choice;
 
         options.forEach(option => scores[option] += choice[option])
+    });
+
+    return scores;
+}
+
+function generateMBCResults(options, ballots) {
+    let scores = {};
+    options.forEach(option => scores[option] = 0);
+
+    ballots.forEach(doc => {
+        let ballot = doc.data().choice;
+
+        for (let i = 0; i < ballot.length; i++)
+            scores[ballot[i]] = ballot.length - i;
     });
 
     return scores;
