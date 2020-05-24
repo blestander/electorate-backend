@@ -20,8 +20,8 @@ exports.handleCORS = (func, methods) => {
 
 exports.ensureLogin = func => {
     return function(request, response) {
-        try {
-            if (request.cookies.__session && validateJWT(request.cookies.__session)) // If the token is valid
+        if (request.cookies.__session) {
+            if (validateJWT(request.cookies.__session)) // If the token is valid
                 func(request, response, decodeJWT(request.cookies.__session));
             else { // Invalid token
                 response.cookie( // Wipe cookie
@@ -34,12 +34,10 @@ exports.ensureLogin = func => {
                         httpOnly: true
                     }
                 );
-                response.status(403).send("not_logged_in");
+                response.status(401).send("not_logged_in");
             }
-        } catch (e) { // No token cookie exists
-            console.error(e);
-            response.status(403).send("not_logged_in");
-        }
+        } else 
+            response.status(401).send('Not logged in');
     }
 }
 

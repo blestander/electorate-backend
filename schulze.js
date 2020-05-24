@@ -2,7 +2,6 @@ const { ensureLogin } = require('./utility.js');
 const { db } = require('./db.js');
 
 exports.generateSchulzeResults = (options, ballots) => {
-    console.log("Entered Schulze");
     try {
         // Generate head to head value
         let headToHeads = processBallots(options, ballots);
