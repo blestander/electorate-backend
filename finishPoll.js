@@ -2,6 +2,7 @@ const { ensureLogin } = require('./utility.js');
 const { db } = require('./db.js');
 const { generateIRVResults } = require('./irv.js');
 const { generateSmithIRVResults } = require('./smith.js');
+const { generateSchulzeResults } = require('./schulze.js');
 const { handleWebhook } = require('./webhook.js');
 
 exports.finishPoll = ensureLogin(finishPollInternal);
@@ -69,6 +70,8 @@ function generateResults(method, options, ballots) {
             return generateCAVResults(options, ballots);
         case "mbc": // Modified Borda Count
             return generateMBCResults(options, ballots);
+        case "schulze": // Schulze method
+            return generateSchulzeResults(options, ballots);
     }
 }
 
