@@ -72,6 +72,8 @@ function generateResults(method, options, ballots) {
             return generateMBCResults(options, ballots);
         case "schulze": // Schulze method
             return generateSchulzeResults(options, ballots);
+        case "score5": // Score voting, 0-5
+            return generateScoreResults(options, ballots);
     }
 }
 
@@ -129,6 +131,21 @@ function generateMBCResults(options, ballots) {
 
         for (let i = 0; i < ballot.length; i++)
             scores[ballot[i]] = ballot.length - i;
+    });
+
+    return scores;
+}
+
+function generateScoreResults(options, ballots) {
+    let scores = {};
+    options.forEach(option => scores[option] = 0);
+
+    ballots.forEach(doc => {
+        let ballot = doc.data().choice;
+        console.log(ballot);
+
+        for (const option of Object.keys(ballot))
+            scores[option] += ballot[option];
     });
 
     return scores;
