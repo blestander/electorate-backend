@@ -14,6 +14,7 @@ const { logout } = require('./logout.js');
 const { getHistory } = require('./history.js');
 const { hostAngular } = require('./angular.js');
 const { checkLogin } = require('./check.js');
+const { getVoters } = require('./voters.js');
 
 const corsOptions = {
     origin: process.env.ORIGIN,
@@ -43,6 +44,7 @@ app.post('/api/login', obtainToken);
 app.get('/api/poll/:id', getPoll);
 app.post('/api/poll/:id/vote', castVote);
 app.post('/api/poll/:id/finish', finishPoll);
+app.get('/api/poll/:id/voters', getVoters);
 app.post('/api/poll/create', createPoll);
 app.get('/api/polls', listPolls);
 app.delete('/api/poll/:id', deletePoll);
