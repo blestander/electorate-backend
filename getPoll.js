@@ -1,5 +1,6 @@
 const { handleCORS, ensureLogin, validateJWT, decodeJWT } = require('./utility.js')
-const { db } = require('./db.js')
+const { db } = require('./db.js');
+const superagent = require('superagent');
 
 
 exports.getPoll = ensureLogin(getPollInternal);
@@ -9,13 +10,13 @@ function getPollInternal(request, response, token) {
     let user_id = token.id;
     let docRef = db.collection("polls").doc(poll_id);
     docRef.get()
-        .then(processPollAndRequestBallot(response, docRef, poll_id, user_id))
+        .then(processPollAndRequestBallotOrGuilds(response, token.access, docRef, poll_id, user_id))
         .catch(err => {
             response.status(500).send("Server error");
         });
 }
 
-function processPollAndRequestBallot(response, docRef, poll_id, user_id) {
+function processPollAndRequestBallotOrGuilds(response, access_token, docRef, poll_id, user_id) {
     return doc => {
         if (doc.exists) {
             data = doc.data();
@@ -29,14 +30,40 @@ function processPollAndRequestBallot(response, docRef, poll_id, user_id) {
                 finished: data.finished,
                 results: data.results
             };
-            docRef.collection("ballots").where("voter", "==", user_id).get()
-                .then(processBallotAndRespond(response, poll))
-                .catch(err => {
-                    response.status(500).send('Server error');
-                })
+            if (data.guild)
+                superagent.get("https://discordapp.com/api/v6/users/@me/guilds")
+                    .set('Authorization', `Bearer ${access_token}`)
+                    .then(processGuildsAndRequestBallot(response, docRef, user_id, poll, data.guild))
+                    .catch(err => {
+                        console.error(err);
+                        response.status(500).send('Server error');
+                    });
+            else
+                docRef.collection("ballots").where("voter", "==", user_id).get()
+                    .then(processBallotAndRespond(response, poll))
+                    .catch(err => {
+                        response.status(500).send('Server error');
+                    });
         }
         else
             response.status(404).send('Not found')
+    };
+}
+
+function processGuildsAndRequestBallot(response, docRef, user_id, poll, guild_id) {
+    return dis_response => {
+        let guilds = dis_response.body;
+        for (let i = 0; i < guilds.length; i++)
+            if (guilds[i].id == guild_id) {
+                docRef.collection("ballots").where("voter", "==", user_id).get()
+                    .then(processBallotAndRespond(response, poll))
+                    .catch(err => {
+                        response.status(500).send('Server error');
+                    });
+                return;
+            }
+        // We're not in this guild
+        response.status(403).send('Forbidden');
     };
 }
 
