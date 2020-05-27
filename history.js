@@ -46,7 +46,10 @@ function processPoll(response, refs, times, polls) {
                 refs.slice(),
                 times.slice(),
                 polls
-            ));
+            )).catch(err => {
+                console.error(err);
+                response.status(500).send('Server error');
+            });
         } else
             response.status(200).send(polls);
     };
