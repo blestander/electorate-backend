@@ -2,9 +2,15 @@ const { ensureLogin, formatDate } = require('./utility.js');
 const { db } = require('./db.js');
 
 exports.listPolls = ensureLogin((request, response, token) => {
-    db.collection('polls').where('owner', '==', token.id).get()
+    db.collection('polls')
+        .where('owner', '==', token.id)
+        .orderBy('start_time', 'desc')
+        .get()
         .then(processAndReturnPolls(request, response, token))
-        .catch(err => response.status(500).send('Server error'));
+        .catch(err => {
+            response.status(500).send('Server error')
+            console.log(err);
+        });
 });
 
 function processAndReturnPolls(request, response, token) {
