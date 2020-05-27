@@ -74,6 +74,7 @@ function processUserAndCreateBallot(response, user_id, choice, ballotsRef) {
         ballotsRef.add({
             voter: user_id,
             choice: choice,
+            vote_time: new Date(Date.now()),
             default_image: default_image,
             custom_image: custom_image,
             name: name

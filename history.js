@@ -1,4 +1,4 @@
-const { ensureLogin } = require('./utility.js');
+const { ensureLogin, formatDate } = require('./utility.js');
 const { db } = require('./db.js');
 
 exports.getHistory = ensureLogin((request, response, token) => {
@@ -13,31 +13,39 @@ function processBallotsAndStartPollRequests(response) {
             response.status(200).send([])
         else { // Something was voted on
             let refs = [];
-            snapshot.forEach(doc => refs.push(doc.ref.parent.parent))
+            let times = [];
+            snapshot.forEach(doc => {
+                refs.push(doc.ref.parent.parent);
+                times.push(formatDate(doc.data().vote_time));
+                console.log(formatDate(doc.data().vote_time));
+            })
             let ref = refs.pop();
             ref.get().then(processPoll(
                 response,
                 refs.slice(),
+                times,
                 []
             ))
         }
     }
 }
 
-function processPoll(response, refs, polls) {
+function processPoll(response, refs, times, polls) {
     return snapshot => {
         let doc = snapshot.data();
         polls.push({
             name: doc.name,
             description: doc.description,
             finished: doc.finished,
-            id: snapshot.id
+            id: snapshot.id,
+            vote_time: times.pop()
         });
         if (refs.length > 0) {
             let ref = refs.pop();
             ref.get().then(processPoll(
                 response,
                 refs.slice(),
+                times.slice(),
                 polls
             ));
         } else
