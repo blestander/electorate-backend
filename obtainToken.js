@@ -10,7 +10,7 @@ const DISCORD_SCOPE = encodeURI("identify guild");
 const DISCORD_REDIRECT_URI = "http://angular.local:4200/auth";
 
 exports.obtainToken = (request, response) => {
-    if (!("code" in request.body)) {
+    if (!("code" in request.body && "remember" in request.body)) {
         response.status(400).send({error: "no_code"})
         return;
     }
@@ -24,7 +24,7 @@ exports.obtainToken = (request, response) => {
         .then((dis_response) => {
             superagent.get(DISCORD_OBTAIN_ID_URL)
                 .set('Authorization', `Bearer ${dis_response.body.access_token}`)
-                .then(buildAndSendToken(response, dis_response));
+                .then(buildAndSendToken(response, dis_response, request.body.remember));
         }).catch(error => {
             if (error.response.body.error == "invalid_request")
                 response.status(400).send({error: "invalid_code"})
@@ -33,7 +33,7 @@ exports.obtainToken = (request, response) => {
         });
 };
 
-function buildAndSendToken(response, dis_response) {
+function buildAndSendToken(response, dis_response, remember) {
     return (id_response) => {
         token = buildJWT(
             dis_response.body.access_token,
@@ -42,7 +42,10 @@ function buildAndSendToken(response, dis_response) {
             dis_response.body.scope.split(" "),
             id_response.body.id
         )
-        setSession(response, token, new Date(Date.now() + 5184000000));
+        setSession(
+            response, 
+            token, 
+            remember ? new Date(Date.now() + 5184000000) : undefined);
         response.status(200).send('')
     }
 }
