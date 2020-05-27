@@ -30,6 +30,7 @@ function processPollAndRequestBallotOrGuilds(response, access_token, docRef, pol
                 finished: data.finished,
                 results: data.results,
                 start_time: formatDate(data.start_time),
+                finish_time: formatDate(data.finish_time)
             };
             if (data.guild)
                 superagent.get("https://discordapp.com/api/v6/users/@me/guilds")

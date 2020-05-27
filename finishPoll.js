@@ -43,6 +43,7 @@ function processBallotsAndSaveResults(response, pollRef, method, options, name, 
             let results = generateResults(method, options, snapshot);
             let changes = {
                 finished: true,
+                finish_time: new Date(Date.now()),
                 results: results
             };
             pollRef.set(changes, {merge: true})

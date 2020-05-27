@@ -17,7 +17,8 @@ function processAndReturnPolls(request, response, token) {
                 description: data.description,
                 finished: data.finished,
                 id: doc.id,
-                start_time: formatDate(data.start_time)
+                start_time: formatDate(data.start_time),
+                finish_time: formatDate(data.finish_time),
             }
             results.push(poll);
         });
