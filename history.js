@@ -17,7 +17,6 @@ function processBallotsAndStartPollRequests(response) {
             snapshot.forEach(doc => {
                 refs.push(doc.ref.parent.parent);
                 times.push(formatDate(doc.data().vote_time));
-                console.log(formatDate(doc.data().vote_time));
             })
             let ref = refs.pop();
             ref.get().then(processPoll(
