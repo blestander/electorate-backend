@@ -1,4 +1,4 @@
-const { handleCORS, ensureLogin, validateJWT, decodeJWT } = require('./utility.js')
+const { ensureLogin, formatDate } = require('./utility.js')
 const { db } = require('./db.js');
 const superagent = require('superagent');
 
@@ -29,7 +29,7 @@ function processPollAndRequestBallotOrGuilds(response, access_token, docRef, pol
                 own: data.owner == user_id,
                 finished: data.finished,
                 results: data.results,
-                start_time: data.start_time,
+                start_time: formatDate(data.start_time),
             };
             if (data.guild)
                 superagent.get("https://discordapp.com/api/v6/users/@me/guilds")

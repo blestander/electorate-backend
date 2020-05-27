@@ -68,3 +68,10 @@ function decodeJWT(token) {
     return JWT.decode(token);
 }
 exports.decodeJWT = decodeJWT;
+
+exports.formatDate = (d) => {
+    if (d)
+        return d.toDate().toISOString();
+    else
+        return d;
+}

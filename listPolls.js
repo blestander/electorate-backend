@@ -1,4 +1,4 @@
-const { ensureLogin } = require('./utility.js');
+const { ensureLogin, formatDate } = require('./utility.js');
 const { db } = require('./db.js');
 
 exports.listPolls = ensureLogin((request, response, token) => {
@@ -16,7 +16,8 @@ function processAndReturnPolls(request, response, token) {
                 name: data.name,
                 description: data.description,
                 finished: data.finished,
-                id: doc.id
+                id: doc.id,
+                start_time: formatDate(data.start_time)
             }
             results.push(poll);
         });
