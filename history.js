@@ -2,9 +2,15 @@ const { ensureLogin, formatDate } = require('./utility.js');
 const { db } = require('./db.js');
 
 exports.getHistory = ensureLogin((request, response, token) => {
-    db.collectionGroup('ballots').where('voter', '==', token.id).get()
+    db.collectionGroup('ballots')
+        .where('voter', '==', token.id)
+        .orderBy('vote_time', 'asc')
+        .get()
         .then(processBallotsAndStartPollRequests(response))
-        .catch(err => console.error(err))
+        .catch(err => {
+            console.error(err);
+            response.status(500).send('Server error');
+        })
 });
 
 function processBallotsAndStartPollRequests(response) {
