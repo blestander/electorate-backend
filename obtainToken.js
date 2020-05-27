@@ -1,7 +1,7 @@
 const superagent = require("superagent");
 const moment = require("moment");
 
-const { handleCORS, buildJWT } = require('./utility.js');
+const { setSession, buildJWT } = require('./utility.js');
 
 const DISCORD_OBTAIN_TOKEN_URL = "https://discordapp.com/api/oauth2/token";
 const DISCORD_OBTAIN_ID_URL = "https://discordapp.com/api/v6/users/@me";
@@ -42,12 +42,7 @@ function buildAndSendToken(response, dis_response) {
             dis_response.body.scope.split(" "),
             id_response.body.id
         )
-        response.cookie("__session", token, {
-            maxAge: 5184000000,
-            secure: process.env.PROD === "true",
-            sameSite: process.env.PROD === "true" ? "Lax" : "None",
-            httpOnly: true,
-        });
+        setSession(response, token, new Date(Date.now() + 5184000000));
         response.status(200).send('')
     }
 }

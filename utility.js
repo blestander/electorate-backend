@@ -24,22 +24,27 @@ exports.ensureLogin = func => {
             if (validateJWT(request.cookies.__session)) // If the token is valid
                 func(request, response, decodeJWT(request.cookies.__session));
             else { // Invalid token
-                response.cookie( // Wipe cookie
-                    "__session",
-                    "",
-                    {
-                        maxAge: 1,
-                        secure: process.env.PROD === "true",
-                        sameSite: process.env.PROD === "true" ? "Lax" : "None",
-                        httpOnly: true
-                    }
-                );
+                setSession(response, "", new Date(Date.now() - 86400000));// Wipe cookie
                 response.status(401).send("not_logged_in");
             }
         } else 
             response.status(401).send('Not logged in');
     }
 }
+
+function setSession(response, payload, expirationDate) {
+    response.cookie(
+        "__session",
+        payload,
+        {
+            expires: expirationDate,
+            secure: process.env.PROD === "true",
+            sameSite: process.env.PROD === "true" ? "Lax" : "None",
+            httpOnly: true
+        }
+    );
+}
+exports.setSession = setSession;
 
 exports.buildJWT = (access_token, refresh_token, expires_on, scope, id) => {
     return JWT.sign({
