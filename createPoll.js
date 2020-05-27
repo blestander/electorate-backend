@@ -7,7 +7,8 @@ function createPollInternal(request, response, token) {
     let poll = {
         ...request.body,
         owner: token.id,
-        finished: false
+        finished: false,
+        start_time: new Date(Date.now())
     }
     db.collection('polls').add(poll)
         .then(snapshot => {

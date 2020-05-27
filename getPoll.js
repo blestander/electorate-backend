@@ -28,7 +28,8 @@ function processPollAndRequestBallotOrGuilds(response, access_token, docRef, pol
                 method: data.method,
                 own: data.owner == user_id,
                 finished: data.finished,
-                results: data.results
+                results: data.results,
+                start_time: data.start_time,
             };
             if (data.guild)
                 superagent.get("https://discordapp.com/api/v6/users/@me/guilds")
