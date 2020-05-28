@@ -1,4 +1,4 @@
-const { ensureLogin, formatDate } = require('./utility.js')
+const { ensureLogin, formatDate, createGuildProof } = require('./utility.js')
 const { db } = require('./db.js');
 const superagent = require('superagent');
 
@@ -61,6 +61,7 @@ function processGuildsAndRequestBallot(response, docRef, user_id, poll, guild_id
         let guilds = dis_response.body;
         for (let i = 0; i < guilds.length; i++)
             if (guilds[i].id == guild_id) {
+                poll.guild_proof = createGuildProof(user_id, guild_id);
                 docRef.collection("ballots").where("voter", "==", user_id).get()
                     .then(processBallotAndRespond(response, poll))
                     .catch(err => {
