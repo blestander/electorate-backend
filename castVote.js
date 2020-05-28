@@ -1,6 +1,6 @@
 const superagent = require('superagent');
 
-const { ensureLogin, decodeJWT } = require("./utility.js");
+const { ensureLogin, verifyGuildProof } = require("./utility.js");
 const { db } = require('./db.js')
 
 exports.castVote = ensureLogin((request, response, token) => {
@@ -9,15 +9,16 @@ exports.castVote = ensureLogin((request, response, token) => {
         let poll_id = request.params.id;
         let choice = request.body.choice;
         let access_token = token.access;
+        let guild_proof = request.body.guild_proof;
         let docRef = db.collection('polls').doc(poll_id);
         docRef.get()
-            .then(checkPollAndRequestBallot(response, user_id, access_token, choice, docRef))
+            .then(checkPollAndRequestBallot(response, user_id, guild_proof, access_token, choice, docRef))
             .catch(err => response.status(500).send('Server error'))
     } else // Something missing
         response.status(400).send('Bad request');
 });
 
-function checkPollAndRequestBallot(response, user_id, access_token, choice, docRef) {
+function checkPollAndRequestBallot(response, user_id, guild_proof, access_token, choice, docRef) {
     return doc => {
         if (doc.exists) { // Poll exists
             let docdata = doc.data();
@@ -25,6 +26,8 @@ function checkPollAndRequestBallot(response, user_id, access_token, choice, docR
                 response.status(409).send({
                     error: "finished"
                 });
+            else if (docdata.guild && !verifyGuildProof(user_id, docdata.guild, guild_proof)) // Check guild membership proof
+                response.status(403).send('Forbidden');
             else if (typeof(choice) == "string" && !docdata.options.includes(choice))
                 response.status(409).send({
                     error: "invalid choice"
