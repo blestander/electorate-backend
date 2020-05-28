@@ -7,13 +7,17 @@ exports.getPoll = ensureLogin(getPollInternal);
 
 function getPollInternal(request, response, token) {
     let poll_id = request.params.id;
-    let user_id = token.id;
-    let docRef = db.collection("polls").doc(poll_id);
-    docRef.get()
-        .then(processPollAndRequestBallotOrGuilds(response, token.access, docRef, poll_id, user_id))
-        .catch(err => {
-            response.status(500).send("Server error");
-        });
+    if (poll_id) { // Poll ID was provided
+        let user_id = token.id;
+        let docRef = db.collection("polls").doc(poll_id);
+        docRef.get()
+            .then(processPollAndRequestBallotOrGuilds(response, token.access, docRef, poll_id, user_id))
+            .catch(err => {
+                console.error(err);
+                response.status(500).send("Server error");
+            });
+    } else // No poll ID
+        response.status(400).send('Bad request')
 }
 
 function processPollAndRequestBallotOrGuilds(response, access_token, docRef, poll_id, user_id) {
