@@ -1,6 +1,6 @@
 const superagent = require('superagent');
 
-const { ensureLogin } = require('./utility.js');
+const { ensureLogin, createGuildProof } = require('./utility.js');
 
 exports.getGuilds = ensureLogin((request, response, token) => {
     superagent.get("https://discordapp.com/api/v6/users/@me/guilds")
@@ -10,7 +10,8 @@ exports.getGuilds = ensureLogin((request, response, token) => {
             let results = [];
             guilds.forEach(guild => results.push({
                 id: guild.id,
-                name: guild.name
+                name: guild.name,
+                proof: createGuildProof(token.id, guild.id)
             }));
             response.status(200).send(results);
         }).catch(err => {

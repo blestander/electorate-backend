@@ -80,3 +80,25 @@ exports.formatDate = (d) => {
     else
         return d;
 }
+
+exports.createGuildProof = (user_id, guild_id) => {
+    return JWT.sign({
+        user: user_id,
+        guild: guild_id
+    }, JWK.asKey(process.env.TOKEN_KEY), {
+        expiresIn: '15 m'
+    });
+};
+
+exports.verifyGuildProof = (user_id, guild_id, proof) => {
+    try {
+        if (JWT.verify(proof, JWK.asKey(process.env.TOKEN_KEY))) { // Proof is valid
+            let decodedProof = JWT.decode(proof);
+            return user_id == decodedProof.user && guild_id == decodedProof.guild;
+        } else // Proof invalid or expired
+            return false;
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+}
