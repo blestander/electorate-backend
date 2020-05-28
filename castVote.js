@@ -13,7 +13,10 @@ exports.castVote = ensureLogin((request, response, token) => {
         let docRef = db.collection('polls').doc(poll_id);
         docRef.get()
             .then(checkPollAndRequestBallot(response, user_id, guild_proof, access_token, choice, docRef))
-            .catch(err => response.status(500).send('Server error'))
+            .catch(err => {
+                console.log(err);
+                response.status(500).send('Server error');
+            });
     } else // Something missing
         response.status(400).send('Bad request');
 });
@@ -28,10 +31,8 @@ function checkPollAndRequestBallot(response, user_id, guild_proof, access_token,
                 });
             else if (docdata.guild && !verifyGuildProof(user_id, docdata.guild, guild_proof)) // Check guild membership proof
                 response.status(403).send('Forbidden');
-            else if (typeof(choice) == "string" && !docdata.options.includes(choice))
-                response.status(409).send({
-                    error: "invalid choice"
-                });
+            else if (!verifyChoice(docdata.method, docdata.options, choice))
+                response.status(400).send('Bad request');
             else {
                 let ballotsRef = docRef.collection('ballots');
                 ballotsRef.where('voter', '==', user_id)
@@ -93,4 +94,40 @@ function concludeCastVote(response, choice) {
             has_voted: true,
         });
     };
+}
+
+function verifyChoice(method, options, choice) {
+    switch (method) {
+        case "fptp":
+            return typeof(choice) == 'string' && options.includes(choice);
+        case "irv":
+        case "smithirv":
+        case "schulze":
+        case "approval":
+        case "mbc":
+            return choice && Array.isArray(choice) && choice.length > 0 && verifyRankedChoice(options, choice);
+        case "cav":
+            return choice && verifyScoreChoice(options, choice, -1, 1);
+        case "score5":
+            return choice && verifyScoreChoice(options, choice, 0, 5);
+        default:
+            return false;
+    }
+}
+
+function verifyRankedChoice(options, choice) {
+    for (let i = 0; i < choice; i++)
+        if (!options.includes(choice[i]))
+            return false;
+    return true;
+}
+
+function verifyScoreChoice(options, choice, min, max) {
+    for (const option of Object.keys(choice)) {
+        if (!options.includes(option))
+            return false;
+        if (choice[option] < min || choice[option] > max)
+            return false;
+    }
+    return true;
 }
