@@ -1,4 +1,4 @@
-const { ensureLogin } = require('./utility.js');
+const { ensureLogin, verifyGuildProof } = require('./utility.js');
 const { db } = require('./db.js');
 
 const webhookRegex = /https:\/\/discordapp\.com\/api\/webhooks\/([0-9]*)\/([A-Za-z0-9\-_]*)/g;
@@ -6,7 +6,7 @@ const webhookRegex = /https:\/\/discordapp\.com\/api\/webhooks\/([0-9]*)\/([A-Za
 exports.createPoll = ensureLogin(createPollInternal);
 
 function createPollInternal(request, response, token) {
-    if (validateSubmission(request.body)) { // Requested poll checks out
+    if (validateSubmission(request.body, token.id)) { // Requested poll checks out
         let poll = {
             ...request.body,
             owner: token.id,
@@ -23,7 +23,7 @@ function createPollInternal(request, response, token) {
         response.status(400).send('Bad Request');
 }
 
-function validateSubmission(poll) {
+function validateSubmission(poll, user_id) {
     if ("name" in poll && typeof(poll.name) == 'string' && poll.name.length > 0)
         if ("options" in poll && Array.isArray(poll.options) && poll.options.length > 0) {
             let allOptionsValid = true;
@@ -34,7 +34,7 @@ function validateSubmission(poll) {
             if (allOptionsValid)
                 if (validateMethod(poll.method))
                     if (validateWebhook(poll.webhook))
-                        if (validateGuild(poll.guild))
+                        if (validateGuild(poll.guild, poll.guild_proof, user_id))
                             return true;
         }
     return false;
@@ -51,7 +51,9 @@ function validateWebhook(webhook) {
         return true;
 }
 
-function validateGuild(guild_id) {
-    // TODO
-    return true;
+function validateGuild(guild_id, guild_proof, user_id) {
+    if (this.guild_id) {
+        return verifyGuildProof(user_id, guild_id, guild_proof);
+    } else
+        return true;
 }
