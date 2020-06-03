@@ -1,13 +1,14 @@
 const superagent = require('superagent');
 
-exports.handleWebhook = (webhook, name, method, options, results) => {
+exports.handleWebhook = (webhook, name, method, id, results) => {
     try {
         let resultString = generateWebhookOutput(method, results);
         let output = [
             `**The poll \"${name}\" has concluded**`,
+            `Poll URL: https://electorate.blestander.com/poll/${id}`,
             '',
             '**__Results__**',
-            `${resultString}`
+            `${resultString}`,
         ].join('\n');
 
         superagent.post(webhook)

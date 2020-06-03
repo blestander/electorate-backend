@@ -12,18 +12,18 @@ function finishPollInternal(request, response, token) {
     let user_id = token.id;
     let docRef = db.collection("polls").doc(poll_id);
     docRef.get()
-        .then(processPollAndRequestBallots(response, user_id, docRef))
+        .then(processPollAndRequestBallots(response, user_id, poll_id, docRef))
         .catch(err => response.status(500).send('Server error'));
 }
 
-function processPollAndRequestBallots(response, user_id, pollRef) {
+function processPollAndRequestBallots(response, user_id, poll_id, pollRef) {
     return snapshot => {
         if (snapshot.exists) { // This poll in fact exists
             let poll = snapshot.data();
             if (poll.owner == user_id) // If this user owns the poll, proceed
                 if (!poll.finished) { // Poll is still open
                     pollRef.collection("ballots").get()
-                        .then(processBallotsAndSaveResults(response, pollRef, poll.method, poll.options, poll.name, poll.webhook))
+                        .then(processBallotsAndSaveResults(response, pollRef, poll.method, poll.options, poll_id, poll.name, poll.webhook))
                         .catch(err => {
                             console.log(err);
                             response.status(500).send('Server error');
@@ -37,7 +37,7 @@ function processPollAndRequestBallots(response, user_id, pollRef) {
     }
 }
 
-function processBallotsAndSaveResults(response, pollRef, method, options, name, webhook) {
+function processBallotsAndSaveResults(response, pollRef, method, options, id, name, webhook) {
     return snapshot => {
         if (snapshot.size > 0) { // Someone has voted
             let results = generateResults(method, options, snapshot);
@@ -50,7 +50,7 @@ function processBallotsAndSaveResults(response, pollRef, method, options, name, 
                 .then(() => {
                     response.status(200).send(changes);
                     if (webhook)
-                        handleWebhook(webhook, name, method, options, results);
+                        handleWebhook(webhook, name, method, id, results);
                 }).catch(err => response.status(500).send('Server error'));
         } else // Nobody has voted
             response.status(409).send("no_votes");
