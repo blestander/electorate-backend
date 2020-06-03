@@ -143,11 +143,13 @@ function generateScoreResults(options, ballots) {
 
     ballots.forEach(doc => {
         let ballot = doc.data().choice;
-        console.log(ballot);
 
         for (const option of Object.keys(ballot))
             scores[option] += ballot[option];
     });
+
+    // Now turn the sum into the average
+    options.forEach(option => scores[option] /= ballots.size);
 
     return scores;
 }
