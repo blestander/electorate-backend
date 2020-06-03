@@ -28,6 +28,7 @@ function generateWebhookOutput(method, results) {
     switch (method) {
         case "fptp":
         case "approval":
+        case "score5":
             return generateSimpleOutput(results);
         case "cav":
             return generateCAVOutput(results);
@@ -35,6 +36,10 @@ function generateWebhookOutput(method, results) {
             return generateIRVOutput(results);
         case "smithirv":
             return generateSmithIRVOutput(results);
+        case "schulze":
+            return generateScorelessSimpleOutput(results.final);
+        case "mbc":
+            return generateScorelessSimpleOutput(results);
     }
 }
 
@@ -108,6 +113,20 @@ function generateSmithIRVOutput(results) {
     ].join('\n');
 }
 
+function generateScorelessSimpleOutput(results) {
+    // Eliminate empty space in groupings array
+    let prunedGroupings = generatePositiveGroupings(results);
+
+    // Build up lines of output
+    let lines = [];
+    for (let i = 1; i <= prunedGroupings.length; i++)
+        lines.push(
+            generateLineWithoutScore(prunedGroupings, i, prunedGroupings.length - i)
+        );
+
+    return lines.join('\n');
+}
+
 function generatePositiveGroupings(results) {
     let maxVotes = Object.values(results).reduce((previous, current) => Math.max(previous, current), 0);
     let rawGroupings = new Array(maxVotes + 1);
@@ -127,4 +146,8 @@ function generatePositiveGroupings(results) {
 
 function generateLine(results, array, rank, index) {
     return `${rank}: ${array[index].join(', ')} - ${results[array[index][0]]}`;
+}
+
+function generateLineWithoutScore(array, rank, index) {
+    return `${rank}: ${array[index].join(', ')}`
 }
