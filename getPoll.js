@@ -82,10 +82,8 @@ function processBallotAndRespond(response, poll) {
         if (poll.has_voted)
             docs.forEach(doc => {
                 let choice = doc.data().choice;
-                console.log(choice);
                 if (Array.isArray(choice))
                     choice = choice.map(x => tryRestoreArray(x))
-                console.log(choice);
                 poll.choice = choice;
             });
 

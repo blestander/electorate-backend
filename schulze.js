@@ -1,5 +1,4 @@
-const { ensureLogin } = require('./utility.js');
-const { db } = require('./db.js');
+const { tryRestoreArray } = require('./utility.js');
 
 exports.generateSchulzeResults = (options, ballots) => {
     try {
@@ -44,17 +43,37 @@ function processBallots(options, ballots) {
         let ballot = doc.data().choice;
 
         // Determine which options were omitted
-        let omitted = options.filter(x => !ballot.includes(x));
+        let omitted = options.filter(x => deepIncludes(ballot, x));
 
-        // For each option on the ballot...
+        // For each rank on the ballot...
         for (let i = 0; i < ballot.length; i++) {
-            // For each option after this option on the ballot...
-            for (let j = i + 1; j < ballot.length; j++) {
-                // Mark this as a victory for option i over option j
-                results[ballot[i]][ballot[j]] += 1;
-            }
-            // Do the same for the omitted options
-            omitted.forEach(option => results[ballot[i]][option] += 1);
+            // Handle if rank is single or multiple options
+            let selection = tryRestoreArray(ballot[i])
+            selection = Array.isArray(selection) ? selection : [ selection ];
+
+            // For each item at this rank...
+            selection.forEach(option => {
+                // For each rank after this one
+                for (let j = i + 1; j < ballot.length; j++) {
+                    // Handle if rank is single or multiple options
+                    let other = tryRestoreArray(ballot[j]);
+                    other = Array.isArray(other) ? other : [ other ];
+
+                    // For each in the later rank...
+                    other.forEach(option2 => {
+                        // Mark down a win for option 1
+                        console.log(`${option} beats ${option2}`);
+                        results[option][option2] += 1;
+                    });
+
+                    // For each omitted option...
+                    omitted.forEach(option2 => {
+                        // Do the same
+                        console.log(`${option} beats ${option2}`);
+                        results[option, option2] += 1;
+                    })
+                }
+            });
         }
     });
 
@@ -114,3 +133,16 @@ function calculateRanking(options, paths) {
 
     return scores;
 }
+
+function deepIncludes(a, x) {
+    for (let i = 0; i < a.length; i++) {
+        let inner = tryRestoreArray[a[i]];
+        if (Array.isArray(inner)) {
+            if (inner.includes(x))
+                return true;
+        } else
+            if (inner == x)
+                return true;
+    }
+    return false;
+};
