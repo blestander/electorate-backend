@@ -43,7 +43,7 @@ function processBallots(options, ballots) {
         let ballot = doc.data().choice;
 
         // Determine which options were omitted
-        let omitted = options.filter(x => deepIncludes(ballot, x));
+        let omitted = options.filter(x => !deepIncludes(ballot, x));
 
         // For each rank on the ballot...
         for (let i = 0; i < ballot.length; i++) {
@@ -62,17 +62,16 @@ function processBallots(options, ballots) {
                     // For each in the later rank...
                     other.forEach(option2 => {
                         // Mark down a win for option 1
-                        console.log(`${option} beats ${option2}`);
                         results[option][option2] += 1;
                     });
-
-                    // For each omitted option...
-                    omitted.forEach(option2 => {
-                        // Do the same
-                        console.log(`${option} beats ${option2}`);
-                        results[option, option2] += 1;
-                    })
                 }
+
+                // For each omitted option...
+                omitted.forEach(option2 => {
+                    // Do the same
+                    results[option][option2] += 1;
+                });
+
             });
         }
     });
@@ -136,7 +135,7 @@ function calculateRanking(options, paths) {
 
 function deepIncludes(a, x) {
     for (let i = 0; i < a.length; i++) {
-        let inner = tryRestoreArray[a[i]];
+        let inner = tryRestoreArray(a[i]);
         if (Array.isArray(inner)) {
             if (inner.includes(x))
                 return true;
