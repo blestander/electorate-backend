@@ -1,4 +1,4 @@
-const { ensureLogin, formatDate, createGuildProof } = require('./utility.js')
+const { ensureLogin, formatDate, createGuildProof, tryRestoreArray } = require('./utility.js')
 const { db } = require('./db.js');
 const superagent = require('superagent');
 
@@ -80,7 +80,14 @@ function processBallotAndRespond(response, poll) {
         poll.can_vote = !poll.has_voted && !poll.finished;
 
         if (poll.has_voted)
-            docs.forEach(doc => poll.choice = doc.data().choice);
+            docs.forEach(doc => {
+                let choice = doc.data().choice;
+                console.log(choice);
+                if (Array.isArray(choice))
+                    choice = choice.map(x => tryRestoreArray(x))
+                console.log(choice);
+                poll.choice = choice;
+            });
 
         response.status(200).send(poll);
     }

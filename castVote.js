@@ -1,6 +1,6 @@
 const superagent = require('superagent');
 
-const { ensureLogin, verifyGuildProof } = require("./utility.js");
+const { ensureLogin, verifyGuildProof, tryRestoreArray } = require("./utility.js");
 const { db } = require('./db.js')
 
 exports.castVote = ensureLogin((request, response, token) => {
@@ -88,8 +88,10 @@ function processUserAndCreateBallot(response, user_id, choice, ballotsRef) {
 
 function concludeCastVote(response, choice) {
     return snapshot => {
+        let processedChoices = Array.isArray(choice) ? choice.map(x => tryRestoreArray(x)) : choice;
+
         response.status(200).send({
-            choice: choice,
+            choice: processedChoices,
             can_vote: false,
             has_voted: true,
         });

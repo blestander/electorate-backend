@@ -102,3 +102,10 @@ exports.verifyGuildProof = (user_id, guild_id, proof) => {
         return false;
     }
 }
+
+exports.tryRestoreArray = (s) => {
+    if (s.includes("\u0007"))
+        return s.split("\u0007");
+    else
+        return s;
+};
