@@ -36,6 +36,8 @@ function processPollAndRequestBallotOrGuilds(response, access_token, docRef, pol
                 start_time: formatDate(data.start_time),
                 finish_time: formatDate(data.finish_time)
             };
+            if (poll.own)
+                poll.webhook = data.webhook;
             if (data.guild)
                 superagent.get("https://discordapp.com/api/v6/users/@me/guilds")
                     .set('Authorization', `Bearer ${access_token}`)
