@@ -1,7 +1,7 @@
 const { ensureLogin } = require('./utility.js');
 const { db } = require('./db.js');
 
-const webhookRegex = /https:\/\/discordapp\.com\/api\/webhooks\/([0-9]*)\/([A-Za-z0-9\-_]*)/g;
+const webhookRegex = /https:\/\/discordapp\.com\/api\/webhooks\/([0-9]*)\/([A-Za-z0-9\-_]*)/;
 
 exports.setWebhook = ensureLogin((request, response, token) => {
     let newHook = request.body.webhook
