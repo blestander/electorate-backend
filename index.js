@@ -16,6 +16,7 @@ const { hostAngular } = require('./angular.js');
 const { checkLogin } = require('./check.js');
 const { getVoters } = require('./voters.js');
 const { getGuilds } = require('./guilds.js');
+const { deleteWebhook } = require('./modifyWebhook.js');
 
 const corsOptions = {
     origin: process.env.ORIGIN,
@@ -46,6 +47,7 @@ app.get('/api/poll/:id', getPoll);
 app.post('/api/poll/:id/vote', castVote);
 app.post('/api/poll/:id/finish', finishPoll);
 app.get('/api/poll/:id/voters', getVoters);
+app.delete('/api/poll/:id/webhook', deleteWebhook);
 app.post('/api/poll/create', createPoll);
 app.get('/api/polls', listPolls);
 app.delete('/api/poll/:id', deletePoll);
