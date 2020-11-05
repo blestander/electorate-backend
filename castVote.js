@@ -51,7 +51,7 @@ function checkBallotAndRequestUserInformation(response, user_id, access_token, c
                 error: "already voted"
             });
         else
-            superagent.get("https://discordapp.com/api/v6/users/@me")
+            superagent.get("https://discord.com/api/v6/users/@me")
                 .set('Authorization', `Bearer ${access_token}`)
                 .then(
                     processUserAndCreateBallot(response, user_id, choice, ballotsRef),

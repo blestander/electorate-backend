@@ -39,7 +39,7 @@ function processPollAndRequestBallotOrGuilds(response, access_token, docRef, pol
             if (poll.own)
                 poll.webhook = data.webhook;
             if (data.guild)
-                superagent.get("https://discordapp.com/api/v6/users/@me/guilds")
+                superagent.get("https://discord.com/api/v6/users/@me/guilds")
                     .set('Authorization', `Bearer ${access_token}`)
                     .then(processGuildsAndRequestBallot(response, docRef, user_id, poll, data.guild))
                     .catch(err => {

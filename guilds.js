@@ -3,7 +3,7 @@ const superagent = require('superagent');
 const { ensureLogin, createGuildProof } = require('./utility.js');
 
 exports.getGuilds = ensureLogin((request, response, token) => {
-    superagent.get("https://discordapp.com/api/v6/users/@me/guilds")
+    superagent.get("https://discord.com/api/v6/users/@me/guilds")
         .set('Authorization', `Bearer ${token.access}`)
         .then(success => {
             let guilds = success.body;
